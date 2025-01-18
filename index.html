@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wemos LED Control</title>
+  <style>
+    /* Gaya dasar halaman */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+    }
+
+    /* Container utama */
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    /* Judul */
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    /* Tombol */
+    .button {
+      display: inline-block;
+      margin: 10px 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .button:hover {
+      background: #0056b3;
+    }
+
+    .button:active {
+      transform: scale(0.95);
+    }
+
+    /* Informasi status */
+    .status {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Wemos LED Control</h1>
+    <button class="button" id="onButton">Turn On LED</button>
+    <button class="button" id="offButton">Turn Off LED</button>
+    <div class="status" id="status">Status: Ready</div>
+  </div>
+
+  <script>
+    // IP Address dari Wemos
+    const WEMOS_IP = "http://192.168.71.232"; // Ganti dengan IP Wemos Anda
+
+    // Elemen DOM
+    const statusText = document.getElementById("status");
+    const onButton = document.getElementById("onButton");
+    const offButton = document.getElementById("offButton");
+
+    // Fungsi untuk mengirim permintaan ke Wemos
+    function sendRequest(endpoint) {
+      fetch(`${WEMOS_IP}/${endpoint}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          statusText.textContent = `Status: ${data.led}`;
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          statusText.textContent = "Status: Error connecting to Wemos";
+        });
+    }
+
+    // Event listener untuk tombol
+    onButton.addEventListener("click", () => {
+      sendRequest("led/on");
+    });
+
+    offButton.addEventListener("click", () => {
+      sendRequest("led/off");
+    });
+  </script>
+</body>
+</html>
